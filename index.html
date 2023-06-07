@@ -30,14 +30,8 @@
         </div>
       </section>
       <section class="Update" v-if="gameStatus">
-        <h3 v-if="lose">
-          You lost!
-        </h3>
-        <h3 v-if="win">
-          You Won
-        </h3>
-        <h3 v-if="draw">
-          Draw
+        <h3 v-if="gameStatus">
+          {{status}}
         </h3>
         <button @click="resetGame">RESET</button>
       </section>

@@ -13,6 +13,8 @@ data(){
         lose:false,
         draw:false,
         logArray:[],
+        StatusArray:["lost!","Win","Draw"],
+        status:'',
     }
 },
 computed:{
@@ -21,30 +23,6 @@ computed:{
     }
 },
 watch:{
-    playersHealth (val){
-        if (val <= 0 && this.monsterHealth > 0){
-            this.playersHealth=0;
-            this.gameStatus=true;
-            this.lose=true;
-        }else if (val > 0 && this.monsterHealth <= 0) {
-            this.monsterHealth = 0;
-            this.gameStatus = true;
-            this.win=true;
-        }else if (val <= 0 && this.monsterHealth <= 0){
-            this.gameStatus = true;
-            this.draw=true;
-        }
-    },
-    // monsterHealth (val){
-    //     if (val <= 0 && this.playersHealth > 0 ){
-    //         this.monsterHealth = 0;
-    //         this.gameStatus=true;
-    //         this.win = true;
-    //     }else if(val <= 0 && this.playersHealth <= 0 ){
-    //         this.gameStatus = true;
-    //         this.draw=true;
-    //     }
-    // },
     gameStatus (val){
         if(val === true){
           return val  
@@ -56,7 +34,8 @@ methods:{
         const attack =Math.floor(getRandomNum(8,12));
         this.playersHealth-=attack;
         this.counter++;
-        this.battleLog('Monster','Attack',attack)
+        this.battleLog('Monster','Attack',attack);
+        this.WatchHealths();
     },
     attacMonster () {
         const attack =Math.floor(getRandomNum(4,8));
@@ -68,23 +47,27 @@ methods:{
         const attack =Math.floor(getRandomNum(8,12));
         this.monsterHealth-=attack;
         this.counter++;
-        this.battleLog('Player','Sp-Attack',attack)
+        this.battleLog('Player','Sp-Attack',attack);
+        this.WatchHealths();
     },
     HealPlayer(){
         const attack =Math.floor(getRandomNum(8,12));
         if (this.playersHealth+attack >= 100){
             this.playersHealth=100;
             this.counter++;
+            this.WatchHealths();
         }else{
             this.playersHealth+=attack;
             this.counter++;
-            this.battleLog('Player','Heal',attack)
+            this.battleLog('Player','Heal',attack);
+            this.WatchHealths();
         }
     },
     surrender () {
         this.playersHealth=0;
         // console.log("*****0******");
-        this.battleLog('Player','surrendered',this.playersHealth)
+        this.battleLog('Player','surrendered',this.playersHealth);
+        this.WatchHealths();
     },
     resetGame () {
         this.playersHealth = 100;
@@ -95,7 +78,24 @@ methods:{
     },
     battleLog (who,type,value){
         this.logArray.unshift({'who':who,'type':type,'value':value});
-        console.log("*********",this.logArray[0]['who'])
+    },
+    WatchHealths (){
+        console.log("player",this.playersHealth,"Monster",this.monsterHealth)
+        if (this.playersHealth <= 0 && this.monsterHealth > 0){
+            this.playersHealth=0;
+            this.gameStatus=true;
+            this.status=this.StatusArray[0];
+            return this.status;
+        }else if (this.playersHealth > 0 && this.monsterHealth <= 0) {
+            this.monsterHealth = 0;
+            this.gameStatus = true;
+            this.status=this.StatusArray[1];
+            return this.status;
+        }else if (this.playersHealth <= 0 && this.monsterHealth <= 0){
+            this.gameStatus = true;
+            this.status=this.StatusArray[2];
+            return this.status;
+        }
     },
 },
 })
